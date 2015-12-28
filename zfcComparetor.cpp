@@ -25,16 +25,17 @@ zfcComparetor& zfcComparetor::instance()
 }
 
 //	‰Šú‰»ˆ—
-void zfcComparetor::init()
+void zfcComparetor::init(const CString& strFolderOutput)
 {
 	m_nCntCorrespond = 0;
 	m_nCntDiscord = 0;
 	m_nCntWarning = 0;
 	m_nCntError = 0;
+	m_strFolderOutput = strFolderOutput;
 }
 
 //	}–Ê”äŠr‚ğs‚¤
-bool zfcComparetor::execute( const CString& strPathOldDwg, const CString strPathNewDwg )
+bool zfcComparetor::execute( const CString& strPathOldDwg, const CString& strPathNewDwg )
 {
 	bool bResult = false;
 	AcDbDatabase* pDbOld = nullptr;
@@ -81,7 +82,7 @@ bool zfcComparetor::execute( const CString& strPathOldDwg, const CString strPath
 	
 	//	‡¬}–Êì¬
 	if( bResult && 0 < resultCompEntity.GetCount() ){
-		bResult = docManager.DrawResultDwg(pDbNew->blockTableId(), pDbOld->blockTableId(), resultCompEntity, conObjectIdNew);
+		bResult = makeCompoundDwg(pDbNew->blockTableId(), pDbOld->blockTableId(), resultCompEntity, conObjectIdNew, zfcUtility::fileName(strPathNewDwg) );
 
 		if( !bResult ){
 			zfcUtility::writeLog2( IDS_FAIL_TO_COMPOUND_DWG, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
@@ -152,3 +153,35 @@ bool zfcComparetor::getAllObjectId( acd::objectIdContainer& conObjectId, AcDbDat
 	return bResult;
 }
 
+//	‡¬}–Êì¬
+bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbObjectId& blockIdOld, ResultCompEntity& resultCompEntity, acd::objectIdContainer& conObjectIdNew, const CString& strFileName ) const
+{
+	bool bResult = true;
+	
+	try{
+		AcDbDatabase* pDb = new AcDbDatabase(false, true);
+		ACDocManager docManager;
+
+		bResult = docManager.DrawResultDwg(blockIdNew, blockIdOld, resultCompEntity, conObjectIdNew, pDb);
+
+		if( bResult ){
+			auto filePath = zfcUtility::filePath( folderOutput(), strFileName );
+			auto es = pDb->saveAs( filePath );
+
+			if( Acad::eOk != es )
+				bResult = false;
+		}
+
+		delete pDb;
+	}
+	catch( std::bad_alloc& ){
+		assert( false );
+		bResult = false;
+	}
+	catch(...){
+		assert( false );
+		bResult = false;
+	}
+
+	return bResult;
+}

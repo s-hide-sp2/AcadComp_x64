@@ -28,7 +28,7 @@ bool zfcCmdCompareDwgInFolder::execute()
 	CString strLogPath = zfcUtility::filePath( folderOutput(), zfcUtility::logFileName() );
 
 	//	比較オブジェクト初期化
-	zfcComparetor::instance().init();
+	zfcComparetor::instance().init( folderOutput() );
 
 	{
 		CWaitCursor wait;

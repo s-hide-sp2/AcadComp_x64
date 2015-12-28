@@ -15,10 +15,10 @@ public:
 	static zfcComparetor& instance();
 
 	//	初期化処理
-	void init();
+	void init(const CString& strFolderOutput );
 
 	//	図面比較を行う
-	bool execute( const CString& strPathOldDwg, const CString strPathNewDwg );
+	bool execute( const CString& strPathOldDwg, const CString& strPathNewDwg );
 
 	//	一致図面数
 	int cntCorrespond() const;
@@ -46,6 +46,9 @@ protected:
 	//	図面内要素のオブジェクトID取得
 	bool getAllObjectId( acd::objectIdContainer& conObjectId, AcDbDatabase* pDb ) const;
 
+	//	合成図面作成
+	bool makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbObjectId& blockIdOld, ResultCompEntity& resultCompEntity, acd::objectIdContainer& conObjectIdNew, const CString& strFileName ) const;
+
 	//	一致図面インクリメント
 	void incrementCorrespond();
 
@@ -57,6 +60,9 @@ protected:
 
 	//	エラー数インクリメント
 	void incrementError();
+
+	//	出力フォルダを返す
+	const CString& folderOutput() const;
 
 private:
 	//	一致図面数
@@ -70,6 +76,9 @@ private:
 
 	//	エラー数
 	int m_nCntError;
+
+	//	出力フォルダ
+	CString m_strFolderOutput;
 };
 
 //	一致図面数
@@ -118,5 +127,11 @@ inline void zfcComparetor::incrementWarning()
 inline void zfcComparetor::incrementError()
 {
 	m_nCntError++;
+}
+
+//	出力フォルダを返す
+inline const CString& zfcComparetor::folderOutput() const
+{
+	return m_strFolderOutput;
 }
 
