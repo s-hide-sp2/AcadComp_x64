@@ -100,7 +100,7 @@ public:
 	// idOldDwgBlockTable: 旧図面のブロックテーブルのID
 	// idMapNew: 
 	bool DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId idOldDwgBlockTable, 
-		ResultCompEntity &rce, CMap<int, int, AcDbObjectId, AcDbObjectId> &idMapNew);
+		ResultCompEntity &rce, CMap<int, int, AcDbObjectId, AcDbObjectId> &idMapNew, AcDbDatabase* pTargetDb = nullptr);
 
 	// SetCurDocで保持した図面をロック解除する。
 	void UnlockCurDoc();

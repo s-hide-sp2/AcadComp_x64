@@ -1248,12 +1248,10 @@ void ACDocManager::UnlockCurDoc()
 
 // 現在アクティブな図面に比較結果を色で表現した図形を描く。
 bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId idOldDwgBlockTable, 
-	ResultCompEntity &rce, CMap<int, int, AcDbObjectId, AcDbObjectId> &idMapNew)
+	ResultCompEntity &rce, CMap<int, int, AcDbObjectId, AcDbObjectId> &idMapNew,
+	AcDbDatabase* pTargetDb )
 {							
 	//return false; //####
-
-	// アクティブな図面を得る。
-	AcApDocument *pDocAct = acDocManager->mdiActiveDocument(); 	
 	
 	// 新図面のモデル空間のIDを得る。
 	AcDbObjectId idModelNew;
@@ -1262,12 +1260,18 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	//CMap<int, int, AcDbObjectId, AcDbObjectId> idMapNew; #####
 	
 	GetModelSpaceId(idNewDwgBlockTable.database(), idModelNew); 			
-	
-	//[DEL: 2005.06.15]
-	// 図面の全ての図形のIDを得る。
-	//GetDwgAllEntityIds(idNewDwgBlockTable, idMapNew);	##### 
 
-	acDocManager->activateDocument(pDocAct);
+	if( nullptr == pTargetDb ){
+		// アクティブな図面を得る。
+		AcApDocument *pDocAct = acDocManager->mdiActiveDocument(); 	
+
+		//[DEL: 2005.06.15]
+		// 図面の全ての図形のIDを得る。
+		//GetDwgAllEntityIds(idNewDwgBlockTable, idMapNew);	##### 
+
+		acDocManager->activateDocument(pDocAct);
+		pTargetDb = pDocAct->database();
+	}
 	
 	//SetMlineStyle(pDocAct->database());	
 
@@ -1278,7 +1282,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	IdFilterByOwner(idMapNew, idModelNew, idaryModelNew);
 	
 	AcDbObjectId   idModelAct;	
-	GetModelSpaceId(pDocAct->database(), idModelAct); 		
+	GetModelSpaceId(pTargetDb, idModelAct); 		
 
 	// 合成図面の目印用XDATAをモデルスペースへ設定する
 	if( !SetResultXData( idModelAct ) ) {
@@ -1290,7 +1294,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	// 新図面を元にすることにした。
 	AcDbIdMapping idMapModelNew;	
 
-	if (pDocAct->database()->wblockCloneObjects(
+	if (pTargetDb->wblockCloneObjects(
 		idaryModelNew, idModelAct, idMapModelNew, AcDb::kDrcIgnore) != Acad::eOk)
 		return false;					
 	
@@ -1335,7 +1339,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	IdFilterByOwner(idmap1, idModelOld, idaryModelOld);
 	
 	AcDbIdMapping idMapModelOld;
-	if (pDocAct->database()->wblockCloneObjects(
+	if (pTargetDb->wblockCloneObjects(
 		idaryModelOld, idModelAct, idMapModelOld, AcDb::kDrcIgnore) != Acad::eOk)
 		return false;
 	
@@ -1353,7 +1357,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	BindXRef(idMapModelOld);
 
 	// 全てのレイヤーの色を白にする。
-	AllLayerDisable(pDocAct->database(), true, true, false);
+	AllLayerDisable(pTargetDb, true, true, false);
 	
 	// 2005.03.15 新規、修正、削除図形用のレイヤーを作成する。
 	//ACResultLayers resLayers;
@@ -1366,9 +1370,9 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 	ClonedColorWhite(idMapModelOld);		
 
 	// 全ての寸法スタイルの色をBYBLOCKにする。
-	SetDimStyle(pDocAct->database(), ACDM_COLOR_BYBLOCK);
+	SetDimStyle(pTargetDb, ACDM_COLOR_BYBLOCK);
 	// 全てのテキストスタイルのビッグフォントファイルを設定する。
-	SetAllTextStyle(pDocAct->database());		
+	SetAllTextStyle(pTargetDb);		
 
 	ACProfileManager	profile;
 	double dArrowMinLen =  profile.GetUserModTextArrowMinLength();
@@ -1408,7 +1412,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 					// テキスト以外は削除する
 					if( pEnt->isA()->isEqualTo(AcDbText::desc()) == Adesk::kTrue ||
 						pEnt->isA()->isEqualTo(AcDbMText::desc()) == Adesk::kTrue ) {
-						CreateBeforeModifyLayers(pDocAct->database());
+						CreateBeforeModifyLayers(pTargetDb);
 						pEnt->setLayer(ACDM_PREVMODIFY_LAYER);
 						pEnt->setColorIndex( ACDM_PREVMODIFY_COLOR );
 
@@ -1437,7 +1441,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 
 			// テキストの場合、元から先へ線を引く
 			if( bIsText ) {
-				AcDbBlockTableRecordPointer	pTbl( pDocAct->database()->currentSpaceId(), AcDb::kForWrite );
+				AcDbBlockTableRecordPointer	pTbl( pTargetDb->currentSpaceId(), AcDb::kForWrite );
 				AcDbEntityPointer	pEnt( idEnt2, AcDb::kForRead );
 				AcGePoint3d	pntAfterModText;
 				double	dHeight;
@@ -1453,7 +1457,7 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 				if( (dHeight * dArrowMinLen) <= pntBeforeModText.distanceTo(pntAfterModText) ) {
 					AcDbObjectPointer<AcDbLeader>	pLeader;
 					pLeader.create();
-					pLeader->setDatabaseDefaults( pDocAct->database() );
+					pLeader->setDatabaseDefaults( pTargetDb );
 					pLeader->appendVertex( pntAfterModText );
 					pLeader->appendVertex( pntBeforeModText );
 					pLeader->setColorIndex( ACDM_PREVMODIFY_COLOR );
