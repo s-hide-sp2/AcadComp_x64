@@ -53,13 +53,13 @@ protected:
 
 private:
 	//	旧図面格納フォルダ
-	CString m_strFolderOldDwg;
+	static CString m_strFolderOldDwg;
 
 	//	新図面格納フォルダ
-	CString m_strFolderNewDwg;
+	static CString m_strFolderNewDwg;
 
 	//	出力フォルダ
-	CString m_strFolderOutput;
+	static CString m_strFolderOutput;
 
 	//	処理済ファイル
 	zfc::pathContainer m_conProcessed;

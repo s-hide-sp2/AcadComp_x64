@@ -32,6 +32,7 @@ void DAACMPTOGGLEDISPADD();
 void DAACMPTOGGLEDISPDELETE();
 void DAACMPTOGGLEDISPMODIFY();
 void DAACMPTOGGLEDISPSAME();
+void DAACMPCompDir();
 //}}AFX_ARX_FUNC
 
 // TODO: Here you can add your own includes / declarations

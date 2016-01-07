@@ -11,6 +11,8 @@
 #//include "tcUtility.h"
 #include "ACDocManager.h"
 #include "ACToggleResultDisp.h"
+#include "zfcTypeDef.h"
+#include "zfcCmdCompareDwgInFolder.h"
 
 // [Taka 2009/06] ARX2010対応  次1行コメントアウト 
 //#define SAMPLE_CAD
@@ -355,5 +357,11 @@ void DAACMPTOGGLEDISPSAME()
 	acToggleDisp.ToggleDisp( ACDM_COLOR_EQUAL );
 }
 
+//	フォルダ内図面一括比較コマンド
+void DAACMPCompDir()
+{
+	zfcCmdCompareDwgInFolder cmd;
 
+	zfcCommand::execute( cmd );
+}
 

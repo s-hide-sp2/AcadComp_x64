@@ -3,7 +3,7 @@
 
 
 zfcLogger::zfcLogger(void)
-	: m_fp(nullptr)
+	: m_bIsOpen(false)
 {
 }
 
@@ -24,58 +24,37 @@ zfcLogger& zfcLogger::instance()
 //	ログファイルオープン
 bool zfcLogger::open( const CString& strPath )
 {
-	bool bResult = true;
-	
-	if( nullptr != m_fp )
-		m_fp = _tfopen( strPath, _T("a") );	
+	if( isOpen() )
+		return true;
 
-	if( nullptr == m_fp )
-		bResult = false;
+	if( m_of.Open( strPath, CFile::modeCreate | CFile::modeWrite ) ){
+		m_bIsOpen = true;
+	}
 
-	return bResult;
+	return isOpen();
 }
 
 //	ログファイルクローズ
-bool zfcLogger::close()
+void zfcLogger::close()
 {
-	bool bResult = true;
-
-	if( nullptr != m_fp ){
-		if( fclose(m_fp) != 0 )
-			bResult = false;
-		
-		m_fp = nullptr;
+	if( isOpen() ){
+		m_of.Close();
 	}
-
-	return bResult;
 }
 
 //	ログ出力
-bool zfcLogger::write( 
-	LPCTSTR lpszLog,		//(i)出力内容
-	...	)					//(i)フォーマット引数
+bool zfcLogger::write( const CString& strLog, bool bCrLf )
 {
 	bool bResult = true;
-	va_list	ap;
-	TCHAR* lpszBuff = nullptr;
-	int nLen = 0;
 
-	va_start(ap, lpszLog);
-	nLen = _vsctprintf( lpszLog, ap ) + 1;
+	assert( isOpen() );
 
 	try{
-		lpszBuff = new TCHAR[nLen];
-
-#ifdef _UNICODE
-		_vstprintf( lpszBuff, nLen, lpszLog, ap );
-#else
-		_vstprintf( lpszBuff, lpszLog, ap );
-#endif
-		_ftprintf( m_fp, lpszBuff );
-		va_end(ap);
-		delete [] lpszBuff;
+		m_of.WriteString( strLog );
+		if( bCrLf )
+			m_of.WriteString( _T("\r\n") );
 	}
-	catch( ... ){
+	catch(...){
 		bResult = false;
 	}
 

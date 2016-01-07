@@ -13,16 +13,18 @@ public:
 	zfcDlgSelectFolder(CWnd* pParent = NULL);   // 標準コンストラクター
 	virtual ~zfcDlgSelectFolder();
 
-	//	シングルトンオブジェクトを返す
-	static zfcDlgSelectFolder& instance();
-
 	///////////////////////////////////////////////////////
 	//
 	//	Get/Set
 
 	const CString& folderOldDwg() const;
+	void setFolderOldDwg(const CString& value);
+
 	const CString& folderNewDwg() const;
+	void setFolderNewDwg(const CString& value);
+
 	const CString& folderCompoundDwg() const;
+	void setFolderCompoundDwg(const CString& value);
 
 // ダイアログ データ
 	enum { IDD = IDD_DLG_SEL_FOLDER };
@@ -61,13 +63,28 @@ inline const CString& zfcDlgSelectFolder::folderOldDwg() const
 	return m_strFolderOldDwg;
 }
 
+inline void zfcDlgSelectFolder::setFolderOldDwg(const CString& value)
+{
+	m_strFolderOldDwg = value;
+}
+
 inline const CString& zfcDlgSelectFolder::folderNewDwg() const
 {
-	return m_strFolderOldDwg;
+	return m_strFolderNewDwg;
+}
+
+inline void zfcDlgSelectFolder::setFolderNewDwg(const CString& value)
+{
+	m_strFolderNewDwg = value;
 }
 
 inline const CString& zfcDlgSelectFolder::folderCompoundDwg() const
 {
 	return m_strFolderCompoundDwg;
+}
+
+inline void zfcDlgSelectFolder::setFolderCompoundDwg(const CString& value)
+{
+	m_strFolderCompoundDwg = value;
 }
 

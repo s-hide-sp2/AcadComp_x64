@@ -8,7 +8,7 @@
 
 zfcComparetor::zfcComparetor(void)
 {
-	init();
+	init(_T(""));
 }
 
 

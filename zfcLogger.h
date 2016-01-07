@@ -1,5 +1,7 @@
 #pragma once
 
+#include "zfcTypeDef.h"
+
 /**
  * ログ出力クラス
  * 
@@ -14,10 +16,12 @@ public:
 	bool open( const CString& strPath );
 
 	//	ログファイルクローズ
-	bool close();
+	void close();
 
 	//	ログ出力
-	bool write( LPCTSTR lpszLog, ...);
+	bool write( const CString& strLog, bool bCrLf = false );
+
+	bool isOpen() const;
 
 protected:
 
@@ -25,5 +29,14 @@ protected:
 	virtual ~zfcLogger(void);
 
 private:
-	FILE* m_fp;
+
+	CStdioFile m_of;
+
+	bool m_bIsOpen;
 };
+
+inline bool zfcLogger::isOpen() const
+{
+	return m_bIsOpen;
+}
+

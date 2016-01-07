@@ -14,6 +14,7 @@ zfcCommand::~zfcCommand(void)
 bool zfcCommand::execute( zfcCommand& cmd )
 {
 	bool bResult = false;
+	CAcModuleResourceOverride resOverride;
 
 	try{
 		bResult = cmd.execute();
@@ -25,4 +26,3 @@ bool zfcCommand::execute( zfcCommand& cmd )
 
 	return bResult;
 }
-

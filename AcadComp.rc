@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 日本語 resources
+// 日本語 (日本) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-#ifdef _WIN32
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 #pragma code_page(932)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +25,18 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#include ""res\\AcadComp.rc2"" // non-Microsoft Visual C++ edited resources\r\n"
     "\0"
@@ -47,7 +45,6 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -70,14 +67,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "AcadComp ObjectARX application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "AcadComp\0"
-            VALUE "LegalCopyright", "Copyright 2004\0"
-            VALUE "OriginalFilename", "DAAAcadComp.arx\0"
-            VALUE "ProductName", "AcadComp Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "AcadComp ObjectARX application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "AcadComp"
+            VALUE "LegalCopyright", "Copyright 2004"
+            VALUE "OriginalFilename", "DAAAcadComp.arx"
+            VALUE "ProductName", "AcadComp Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -86,28 +82,22 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_DLG_COMP DIALOG DISCARDABLE  0, 0, 490, 290
-STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
-    WS_THICKFRAME
+IDD_DLG_COMP DIALOG 0, 0, 490, 290
+STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "差分抽出"
 FONT 9, "ＭＳ Ｐゴシック"
 BEGIN
-    COMBOBOX        IDC_CBO_DWG_LIST1,21,29,179,73,CBS_DROPDOWNLIST | 
-                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CBO_DWG_LIST1,21,29,179,73,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "参照(&R)",IDC_BTN_REF1,205,29,33,14
-    COMBOBOX        IDC_CBO_DWG_LIST2,263,29,171,71,CBS_DROPDOWNLIST | 
-                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CBO_DWG_LIST2,263,29,171,71,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "参照(&F)",IDC_BTN_REF2,437,29,33,14
-    CONTROL         "List1",IDC_LIST_GRID,"SysListView32",LVS_REPORT | 
-                    LVS_OWNERDRAWFIXED | WS_BORDER | WS_TABSTOP,6,70,477,157
+    CONTROL         "List1",IDC_LIST_GRID,"SysListView32",LVS_REPORT | LVS_OWNERDRAWFIXED | WS_BORDER | WS_TABSTOP,6,70,477,157
     DEFPUSHBUTTON   "比較開始(&C)",IDC_BTN_COMP,10,238,50,14
     PUSHBUTTON      "ﾊｲﾗｲﾄ1(&H)",IDC_BTN_SEL,71,238,50,14,WS_DISABLED
     PUSHBUTTON      "ﾊｲﾗｲﾄ2(&I)",IDC_BTN_SEL2,131,238,50,14,WS_DISABLED
@@ -115,18 +105,15 @@ BEGIN
     GROUPBOX        "図面1",IDC_STAT_1,6,14,236,37
     GROUPBOX        "図面2",IDC_STAT_2,254,14,229,37
     PUSHBUTTON      "CSV(&V)",IDC_BTN_CSV,189,238,50,14,WS_DISABLED
-    CONTROL         "Excel起動(&X)",IDC_CHK_EXCEL,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,189,254,51,11
-    CONTROL         "合成図面(&M)",IDC_CHK_RESDWG,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,268,51,11
+    CONTROL         "Excel起動(&X)",IDC_CHK_EXCEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,189,254,51,11
+    CONTROL         "合成図面(&M)",IDC_CHK_RESDWG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,268,51,11
     GROUPBOX        "",IDC_STAT_COMP,6,228,59,55
     GROUPBOX        "",IDC_STAT_CSV,185,228,60,40
-    CONTROL         "範囲比較(&T)",IDC_CHK_RECTCOMP,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,254,53,11
+    CONTROL         "範囲比較(&T)",IDC_CHK_RECTCOMP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,254,53,11
 END
 
-IDD_DLG_SETTING DIALOG DISCARDABLE  0, 0, 121, 57
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_DLG_SETTING DIALOG 0, 0, 121, 57
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "設定"
 FONT 9, "ＭＳ Ｐゴシック"
 BEGIN
@@ -136,6 +123,25 @@ BEGIN
     LTEXT           "許容誤差",IDC_STATIC,7,8,31,11
 END
 
+IDD_DLG_SEL_FOLDER DIALOGEX 0, 0, 376, 166
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "図面一括比較"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "実行(&E)",IDEXECUTE,256,145,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,319,145,50,14
+    GROUPBOX        "図面フォルダ",IDC_STATIC,7,7,362,128
+    PUSHBUTTON      "...",IDC_BTN_FOLDER_OLD_DWG,348,20,21,14
+    LTEXT           "旧図面(&O):",IDC_STATIC,9,23,38,8
+    EDITTEXT        IDC_EDT_FOLDER_OLD_DWG,7,35,362,14,ES_AUTOHSCROLL
+    LTEXT           "新図面(&N):",IDC_STATIC,9,57,38,8
+    PUSHBUTTON      "...",IDC_BTN_FOLDER_NEW_DWG,348,55,21,14
+    EDITTEXT        IDC_EDT_FOLDER_NEW_DWG,7,70,362,14,ES_AUTOHSCROLL
+    LTEXT           "合成図面(&C):",IDC_STATIC,9,93,46,8
+    PUSHBUTTON      "...",IDC_BTN_FOLDER_COMPOUND_DWG,348,90,21,14
+    EDITTEXT        IDC_EDT_FOLDER_COMPOUND_DWG,7,105,362,14,ES_AUTOHSCROLL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -143,7 +149,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_DLG_COMP, DIALOG
     BEGIN
@@ -160,6 +166,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 50
     END
+
+    IDD_DLG_SEL_FOLDER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 369
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 159
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -169,11 +183,11 @@ END
 // Menu
 //
 
-IDR_MNU_COMP MENU DISCARDABLE 
+IDR_MNU_COMP MENU
 BEGIN
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "許容誤差(&T)",                ID_MNU_SETTING
+        MENUITEM "許容誤差(&T)",                    ID_MNU_SETTING
     END
 END
 
@@ -185,22 +199,45 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_RES_EQUAL           ICON    DISCARDABLE     "res_equal.ico"
-IDI_RES_NOT_EQUAL       ICON    DISCARDABLE     "res_not_equal.ico"
-IDI_RES_ONLY1           ICON    DISCARDABLE     "res_only1.ico"
-IDI_RES_ONLY2           ICON    DISCARDABLE     "res_only2.ico"
+IDI_RES_EQUAL           ICON                    "res_equal.ico"
+IDI_RES_NOT_EQUAL       ICON                    "res_not_equal.ico"
+IDI_RES_ONLY1           ICON                    "res_only1.ico"
+IDI_RES_ONLY2           ICON                    "res_only2.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "AcadComp"
+    IDS_FAIL_TO_READ_DWG    "図面の読み込みに失敗：%1\r\n"
+    IDS_FAIL_TO_GET_ID      "図面内要素の取得に失敗：%1\r\n"
+    IDS_FAIL_TO_COMPARE_DWG "図面の比較に失敗：%1 %2\r\n"
+    IDS_FAIL_TO_COMPOUND_DWG "図面の合成に失敗：%1 %2\r\n"
+    IDS_ONLY_EXIST_NEW_DWG_FOLDER "以下のファイルは旧図面フォルダに存在しませんでした\r\n"
+    IDS_ONLY_EXIST_OLD_DWG_FOLDER "以下のファイルは新図面フォルダに存在しませんでした\r\n"
+    IDS_OLD_DWG_FOLDER      "旧図面フォルダ：%1\r\n"
+    IDS_NEW_DWG_FOLDER      "新図面フォルダ：%1\r\n"
+    IDS_CORRESPOND          "一致：%1 %2\r\n"
+    IDS_DISCORD             "不一致：%1 %2\r\n"
+    IDS_INVALID_FOLDER      "無効なフォルダです。"
 END
 
-#endif    // 日本語 resources
+STRINGTABLE
+BEGIN
+    IDS_OLD_DWG_TIMESTAMP_IS_NEW "旧図面のファイル更新日時の方が新図面ファイルより新しい：%1 %2"
+    IDS_COMPLETE_COMPARE_DWG "図面の比較が終了しました。"
+    IDS_COMPARE_RESULT      "\r\n========== 比較結果: %1 =========="
+    IDS_RESULT_CORRESPOND   "一致 %1"
+    IDS_RESULT_DISCORD      "不一致 %1"
+    IDS_RESULT_WARNING      "警告 %1"
+    IDS_RESULT_ERROR        "失敗 %1"
+    IDS_UNKNOWN_ERROR       "原因不明のエラーが発生しました。"
+END
+
+#endif    // 日本語 (日本) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

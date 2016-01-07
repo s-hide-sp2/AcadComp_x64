@@ -165,10 +165,12 @@ CString zfcUtility::filePath( const CString& strFolderPath, const CString& strFi
 	TCHAR szPath[MAX_PATH];
 	TCHAR szDrive[_MAX_DRIVE];
 	TCHAR szDir[_MAX_DIR];
+	TCHAR szFname[_MAX_FNAME];
+	CString strDir;
 
-	::GetModuleFileName( NULL, szPath, MAX_PATH );
-	_tsplitpath( strFolderPath, szDrive, szDir, NULL, NULL );
-	_tmakepath( szPath, szDrive, szDir, strFileName, strExt );
+	_tsplitpath( strFolderPath, szDrive, szDir, szFname, NULL );
+	strDir.Format( _T("%s%s"), szDir, szFname );
+	_tmakepath( szPath, szDrive, strDir, strFileName, strExt );
 
 	return szPath;
 }
@@ -180,7 +182,7 @@ void zfcUtility::writeLog1( int nResourceId, const CString& strFmt1 )
 
 	AfxFormatString1( str, nResourceId, strFmt1 );
 
-	zfcLogger::instance().write( _T("%s\n"), str );
+	zfcLogger::instance().write( str );
 }
 
 //	ログ出力する
@@ -190,7 +192,7 @@ void zfcUtility::writeLog2( int nResourceId, const CString& strFmt1, const CStri
 
 	AfxFormatString2( str, nResourceId, strFmt1, strFmt2 );
 
-	zfcLogger::instance().write( _T("%s\n"), str );
+	zfcLogger::instance().write( str );
 }
 
 //	ファイル名をログ出力出力する
@@ -211,4 +213,3 @@ CString zfcUtility::fileName( const CString& strPath )
 	
 	return szPath;
 }
-

@@ -24,14 +24,6 @@ zfcDlgSelectFolder::~zfcDlgSelectFolder()
 {
 }
 
-//	シングルトンオブジェクトを返す
-zfcDlgSelectFolder& zfcDlgSelectFolder::instance()
-{
-	static zfcDlgSelectFolder sigleton;
-
-	return sigleton;
-}
-
 //	フォルダの存在チェック
 BOOL zfcDlgSelectFolder::checkFolder( int nEditCtrlID ) const
 {
@@ -59,9 +51,8 @@ BOOL zfcDlgSelectFolder::checkFolder( int nEditCtrlID ) const
 //	フォルダを選択する
 BOOL zfcDlgSelectFolder::selectFolder( CString& strSelFolder, const CString& strIniFolder )
 {
-	auto pWinApp = dynamic_cast<CWinAppEx*>( AfxGetApp() );
-	assert( nullptr != pWinApp );
-	BOOL bSelect = pWinApp->GetShellManager()->BrowseForFolder(strSelFolder, this, strIniFolder);
+	CWinAppEx* pApp = (CWinAppEx*)acedGetAcadWinApp();
+	BOOL bSelect = pApp->GetShellManager()->BrowseForFolder(strSelFolder, this, strIniFolder );
 
 	return bSelect;
 }
@@ -88,6 +79,9 @@ END_MESSAGE_MAP()
 //	旧図面フォルダ選択ボタンクリック
 void zfcDlgSelectFolder::OnBnClickedBtnFolderOldDwg()
 {
+	if( !UpdateData(TRUE) )
+		return;
+
 	if( selectFolder(m_strFolderOldDwg, m_strFolderOldDwg) ){
 		UpdateData(FALSE);
 	}
@@ -96,6 +90,9 @@ void zfcDlgSelectFolder::OnBnClickedBtnFolderOldDwg()
 //	新図面フォルダ選択ボタンクリック
 void zfcDlgSelectFolder::OnBnClickedBtnFolderNewDwg()
 {
+	if( !UpdateData(TRUE) )
+		return;
+
 	if( selectFolder(m_strFolderNewDwg, m_strFolderNewDwg) ){
 		UpdateData(FALSE);
 	}
@@ -104,6 +101,9 @@ void zfcDlgSelectFolder::OnBnClickedBtnFolderNewDwg()
 //	合成図面フォルダ選択ボタンクリック
 void zfcDlgSelectFolder::OnBnClickedBtnFolderCompoundDwg()
 {
+	if( !UpdateData(TRUE) )
+		return;
+
 	if( selectFolder(m_strFolderCompoundDwg, m_strFolderCompoundDwg) ){
 		UpdateData(FALSE);
 	}
