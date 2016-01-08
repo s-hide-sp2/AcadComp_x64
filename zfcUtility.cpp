@@ -195,10 +195,14 @@ void zfcUtility::writeLog2( int nResourceId, const CString& strFmt1, const CStri
 	zfcLogger::instance().write( str );
 }
 
-//	ファイル名をログ出力出力する
+//	ファイル名をログ出力する
 void zfcUtility::writeFileName( const zfc::pathContainer& conPath )
 {
-	zfc::for_each( conPath, [](zfc::pathContainer::const_reference pair){  zfcLogger::instance().write( _T("%s\r\n"), pair.first + _T(".dwg") ); } );
+	zfc::for_each( conPath, [](zfc::pathContainer::const_reference pair){ 
+		CString str;
+
+		str.Format( _T("%s\r\n"), pair.first + _T(".dwg") );
+		zfcLogger::instance().write( str ); } );
 }
 
 //	ファイルパスからファイル名を返す

@@ -46,6 +46,7 @@ bool zfcCmdCompareDwgInFolder::execute()
 
 		zfcUtility::writeLog1( IDS_OLD_DWG_FOLDER, folderOldDwg() );
 		zfcUtility::writeLog1( IDS_NEW_DWG_FOLDER, folderNewDwg() );
+		zfcLogger::instance().write( _T("\r\n") );
 
 		//	フォルダ下のファイル情報取得
 		getDwgInFoder( conPathOld, folderOldDwg() );
@@ -157,6 +158,7 @@ void zfcCmdCompareDwgInFolder::writeLogOnlyExistInOldDwgFolder(zfc::pathContaine
 	zfc::for_each( m_conProcessed, [&](zfc::pathContainer::const_reference pair){conPathOld.erase(pair.first);} );
 
 	if( !conPathOld.empty() ){
+		zfcLogger::instance().write( _T("\r\n") );
 		zfcUtility::writeLog1( IDS_ONLY_EXIST_OLD_DWG_FOLDER, _T("") );
 		//	旧図面フォルダのみに存在したファイルを出力
 		zfcUtility::writeFileName( conPathOld );
@@ -167,6 +169,7 @@ void zfcCmdCompareDwgInFolder::writeLogOnlyExistInOldDwgFolder(zfc::pathContaine
 void zfcCmdCompareDwgInFolder::writeLogOnlyExistInNewDwgFolder() const
 {
 	if( !m_conUnProcessed.empty() ){
+		zfcLogger::instance().write( _T("\r\n") );
 		zfcUtility::writeLog1( IDS_ONLY_EXIST_NEW_DWG_FOLDER, _T("") );
 		zfcUtility::writeFileName( m_conUnProcessed );
 	}
