@@ -28,6 +28,8 @@ protected:
 	zfcLogger(void);
 	virtual ~zfcLogger(void);
 
+	void setIsOpen(bool value );
+
 private:
 
 	CStdioFile m_of;
@@ -40,3 +42,7 @@ inline bool zfcLogger::isOpen() const
 	return m_bIsOpen;
 }
 
+inline void zfcLogger::setIsOpen(bool value)
+{
+	m_bIsOpen = value;
+}

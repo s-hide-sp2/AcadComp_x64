@@ -28,7 +28,7 @@ bool zfcLogger::open( const CString& strPath )
 		return true;
 
 	if( m_of.Open( strPath, CFile::modeCreate | CFile::modeWrite ) ){
-		m_bIsOpen = true;
+		setIsOpen(true);
 	}
 
 	return isOpen();
@@ -39,6 +39,7 @@ void zfcLogger::close()
 {
 	if( isOpen() ){
 		m_of.Close();
+		setIsOpen(false);
 	}
 }
 
