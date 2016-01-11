@@ -137,13 +137,18 @@ Acad::ErrorStatus zfcUtility::getAllAttribute( zfc::entityContainer& conEntity, 
 	for( pItrAttr->start(); Acad::eOk == es && !pItrAttr->done(); pItrAttr->step() ){
 		AcDbEntity* pEnt = nullptr;
 		AcDbHandle handle;
+		auto id = pItrAttr->objectId();
 
-		// todo —v“®ìŠm”F
-		pEnt = pItrAttr->entity();
-		assert( nullptr != pEnt );
-		pEnt->getAcDbHandle(handle);
-		handle.getIntoAsciiBuffer(szHandle);
-		conEntity.insert( zfc::entityContainer::value_type(szHandle, pEnt) );
+		assert( !id.isNull() );
+	
+		es = acdbOpenAcDbEntity(pEnt, id, mode);
+		assert( Acad::eOk == es );
+
+		if( Acad::eOk == es ){
+			pEnt->getAcDbHandle(handle);
+			handle.getIntoAsciiBuffer(szHandle);
+			conEntity.insert( zfc::entityContainer::value_type(szHandle, pEnt) );
+		}
 	}
 
 	delete pItrAttr;
