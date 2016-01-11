@@ -22,6 +22,9 @@
 #define IDS_RESULT_WARNING              117
 #define IDS_RESULT_ERROR                118
 #define IDS_UNKNOWN_ERROR               119
+#define IDS_SELECT_OLD_DWG_FOLDER       120
+#define IDS_SELECT_NEW_DWG_FOLDER       121
+#define IDS_SELECT_COMPOUND_DWG_FOLDER  122
 #define IDC_LIST_GRID                   200
 #define IDD_DLG_COMP                    200
 #define IDC_CBO_DWG_LIST1               201

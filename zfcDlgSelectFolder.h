@@ -34,7 +34,7 @@ private:
 	BOOL checkFolder( int nEditCtrlID ) const;
 
 	//	フォルダを選択する
-	BOOL selectFolder( CString& strSelFolder, const CString& strIniFolder );
+	BOOL selectFolder( CString& strSelFolder, const CString& strIniFolder, int nTitleID);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート

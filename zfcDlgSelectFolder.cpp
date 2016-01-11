@@ -49,10 +49,12 @@ BOOL zfcDlgSelectFolder::checkFolder( int nEditCtrlID ) const
 }
 
 //	フォルダを選択する
-BOOL zfcDlgSelectFolder::selectFolder( CString& strSelFolder, const CString& strIniFolder )
+BOOL zfcDlgSelectFolder::selectFolder( CString& strSelFolder, const CString& strIniFolder, int nTitleID )
 {
+	CString strTitle;
+	AfxFormatString1( strTitle, nTitleID, _T("") );
 	CWinAppEx* pApp = (CWinAppEx*)acedGetAcadWinApp();
-	BOOL bSelect = pApp->GetShellManager()->BrowseForFolder(strSelFolder, this, strIniFolder );
+	BOOL bSelect = pApp->GetShellManager()->BrowseForFolder(strSelFolder, this, strIniFolder, strTitle );
 
 	return bSelect;
 }
@@ -82,7 +84,7 @@ void zfcDlgSelectFolder::OnBnClickedBtnFolderOldDwg()
 	if( !UpdateData(TRUE) )
 		return;
 
-	if( selectFolder(m_strFolderOldDwg, m_strFolderOldDwg) ){
+	if( selectFolder(m_strFolderOldDwg, m_strFolderOldDwg, IDS_SELECT_OLD_DWG_FOLDER) ){
 		UpdateData(FALSE);
 	}
 }
@@ -93,7 +95,7 @@ void zfcDlgSelectFolder::OnBnClickedBtnFolderNewDwg()
 	if( !UpdateData(TRUE) )
 		return;
 
-	if( selectFolder(m_strFolderNewDwg, m_strFolderNewDwg) ){
+	if( selectFolder(m_strFolderNewDwg, m_strFolderNewDwg, IDS_SELECT_NEW_DWG_FOLDER) ){
 		UpdateData(FALSE);
 	}
 }
@@ -104,7 +106,7 @@ void zfcDlgSelectFolder::OnBnClickedBtnFolderCompoundDwg()
 	if( !UpdateData(TRUE) )
 		return;
 
-	if( selectFolder(m_strFolderCompoundDwg, m_strFolderCompoundDwg) ){
+	if( selectFolder(m_strFolderCompoundDwg, m_strFolderCompoundDwg, IDS_SELECT_COMPOUND_DWG_FOLDER) ){
 		UpdateData(FALSE);
 	}
 }
