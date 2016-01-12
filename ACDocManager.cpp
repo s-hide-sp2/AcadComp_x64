@@ -1456,8 +1456,13 @@ bool ACDocManager::DrawResultDwg(AcDbObjectId idNewDwgBlockTable, AcDbObjectId i
 
 				if( (dHeight * dArrowMinLen) <= pntBeforeModText.distanceTo(pntAfterModText) ) {
 					AcDbObjectPointer<AcDbLeader>	pLeader;
+					AcDbDatabase* pActiveDb = ( acDocManager->mdiActiveDocument() != nullptr ) ? acDocManager->mdiActiveDocument()->database() : nullptr;  
+
 					pLeader.create();
 					pLeader->setDatabaseDefaults( pTargetDb );
+					//	アクティブドキュメント以外の場合(compdirコマンド実行時)は矢印サイズをセットする
+					if( nullptr != pActiveDb && pActiveDb != pTargetDb )
+						pLeader->setDimasz(pActiveDb->dimasz());
 					pLeader->appendVertex( pntAfterModText );
 					pLeader->appendVertex( pntBeforeModText );
 					pLeader->setColorIndex( ACDM_PREVMODIFY_COLOR );
