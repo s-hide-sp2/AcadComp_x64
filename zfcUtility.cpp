@@ -17,7 +17,7 @@ Acad::ErrorStatus zfcUtility::readDwg( AcDbDatabase*& pDb, const CString& strPat
 	Acad::ErrorStatus es = Acad::eOk;
 	
 	try{
-		pDb = new AcDbDatabase(false, true);
+		pDb = new AcDbDatabase(false);
 
 		es = pDb->readDwgFile( strPath );
 	}
