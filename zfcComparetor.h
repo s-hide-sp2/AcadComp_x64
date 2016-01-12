@@ -64,6 +64,9 @@ protected:
 	//	出力フォルダを返す
 	const CString& folderOutput() const;
 
+	//	合成図面ファイル名を返す
+	CString compoundFileName( const CString& strOldDwgFileTitle, const CString& strNewDwgFileTitle ) const;
+
 private:
 	//	一致図面数
 	int m_nCntCorrespond;

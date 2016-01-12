@@ -217,3 +217,15 @@ CString zfcUtility::fileName( const CString& strPath )
 	
 	return szPath;
 }
+
+//	ファイル名からファイルタイトル(拡張子を除く)を返す
+CString zfcUtility::fileTitle( const CString& strPath )
+{
+	TCHAR szPath[_MAX_PATH];
+	TCHAR szName[_MAX_FNAME];
+	
+	_tsplitpath( strPath, NULL, NULL, szName, NULL );
+	_tmakepath( szPath, NULL, NULL, szName, NULL ); 
+	
+	return szPath;
+}

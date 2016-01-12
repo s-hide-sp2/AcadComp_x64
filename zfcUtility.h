@@ -43,6 +43,9 @@ public:
 	//	ファイルパスからファイル名を返す
 	static CString fileName( const CString& strPath );
 
+	//	ファイルパスからファイルタイトル(拡張子を除く)を返す
+	static CString fileTitle( const CString& strPath );
+
 protected:
 
 	zfcUtility(void);

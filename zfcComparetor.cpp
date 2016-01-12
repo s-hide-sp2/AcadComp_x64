@@ -82,10 +82,11 @@ bool zfcComparetor::execute( const CString& strPathOldDwg, const CString& strPat
 	
 	//	çáê¨ê}ñ çÏê¨
 	if( bResult && 0 < resultCompEntity.GetCount() ){
-		bResult = makeCompoundDwg(pDbNew->blockTableId(), pDbOld->blockTableId(), resultCompEntity, conObjectIdNew, zfcUtility::fileName(strPathNewDwg) );
+		CString strCompoundDwgFileName = compoundFileName( zfcUtility::fileTitle(strPathOldDwg), zfcUtility::fileTitle(strPathNewDwg) );
+		bResult = makeCompoundDwg(pDbNew->blockTableId(), pDbOld->blockTableId(), resultCompEntity, conObjectIdNew, strCompoundDwgFileName );
 
 		if( !bResult ){
-			zfcUtility::writeLog2( IDS_FAIL_TO_COMPOUND_DWG, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+			zfcUtility::writeLog2( IDS_FAIL_TO_COMPOUND_DWG, zfcUtility::fileName(strPathOldDwg), strCompoundDwgFileName );
 		}
 	}
 
@@ -185,3 +186,19 @@ bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbOb
 
 	return bResult;
 }
+
+//	çáê¨ê}ñ ÉtÉ@ÉCÉãñºÇï‘Ç∑
+CString zfcComparetor::compoundFileName( const CString& strOldDwgFileTitle, const CString& strNewDwgFileTitle ) const
+{
+	CString strCompoundDwgFileName;
+
+	if( !strOldDwgFileTitle.CompareNoCase(strNewDwgFileTitle) ){
+		strCompoundDwgFileName.Format( _T("%s.dwg"), strNewDwgFileTitle );
+	}
+	else{
+		strCompoundDwgFileName.Format( _T("%s-%s.dwg"), strOldDwgFileTitle, strNewDwgFileTitle.Right(1) );
+	}
+
+	return strCompoundDwgFileName;
+}
+
