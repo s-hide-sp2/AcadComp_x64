@@ -234,3 +234,91 @@ CString zfcUtility::fileTitle( const CString& strPath )
 	
 	return szPath;
 }
+
+//	アプリケーション名を返す
+CString& zfcUtility::appName()
+{
+	static CString strAppName(_T("ZFC_APPLICATION"));
+
+	return strAppName;
+}
+
+//	拡張データ用図面名を返す
+CString& zfcUtility::drawingNameForXData()
+{
+	static CString strDrawingName(_T("ZFC_DRAWING"));
+
+	return strDrawingName;
+}
+
+//	図面に対して拡張データをセットする
+Acad::ErrorStatus zfcUtility::setAppXData( AcDbDatabase* pDb )
+{
+	Acad::ErrorStatus es = Acad::eOk;
+	AcDbBlockTable* pBlkTbl = nullptr;
+	AcDbObjectId idModelSpace;
+	AcDbObject* pModelSpace = nullptr;
+	struct resbuf* pRb = nullptr;
+	struct resbuf* pRbData = nullptr;
+	bool bSetXData = false;
+
+	//	モデル空間のID取得
+	es = pDb->getSymbolTable(pBlkTbl, AcDb::kForRead);
+
+    if( Acad::eOk == es ){
+		es = pBlkTbl->getAt(ACDB_MODEL_SPACE, idModelSpace, AcDb::kForRead);
+		pBlkTbl->close();
+	} 
+
+	if( Acad::eOk == es )
+		es = acdbOpenObject(pModelSpace, idMoidModelSpacedel, AcDb::kForWrite);
+	
+	if( Acad::eOk == es )
+		pRb = pModelSpace->xData( zfcUtility::appName() );
+
+	//	設定済みの場合は何もしない
+	if( nullptr != pRb ){
+		ads_relrb(pRb);
+		pRb = nullptr;
+	}
+	else{
+		pRb = ads_newrb(AcDb::kDxfRegAppName);
+
+		if( nullptr == pRb ){
+			es = Acad::rOutOfMemory;
+		}
+		else{
+			bSetXData = true;
+		}
+	}
+
+	//	拡張データをセット
+	if( bSetXData ){
+		try{
+			pRb->resval.rstring = new TCHAR[zfcUtility::appName().GetLength() + 1];
+			_tcscpy( pRb->resval.rstring, zfcUtility::appName() );
+
+			pRbData = ads_newrb(AcDb::kDxfXdAsciiString);
+			pRbData->resval.rstring = new TCHAR[zfcUtility::drawingNameForXData().GetLength() + 1];
+			_tcscpy(pRbData->resval.rstring, zfcUtility::drawingNameForXData());
+			pRb->rbnext = pRbData;
+
+			es = pModelSpace->setXData(pRb);
+			ads_relrb(pRb);
+		}
+		catch(...){
+			assert( false );
+			if( nullptr != pRb )
+				ads_relrb(pRb);
+			if( nullptr != pRbData )
+				ads_relrb(pRbData);
+
+			es = Acad::rOutOfMemory;
+		}
+	}
+		
+	if( nullptr != pModelSpace )
+		pModelSpace->close();
+
+	return es;
+}

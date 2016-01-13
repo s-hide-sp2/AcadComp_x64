@@ -46,6 +46,15 @@ public:
 	//	ファイルパスからファイルタイトル(拡張子を除く)を返す
 	static CString fileTitle( const CString& strPath );
 
+	//	アプリケーション名を返す
+	static CString& appName();
+
+	//	拡張データ用図面名を返す
+	static CString& drawingNameForXData();
+
+	//	図面に対して拡張データをセットする
+	static Acad::ErrorStatus setAppXData( AcDbDatabase* pDb );
+
 protected:
 
 	zfcUtility(void);

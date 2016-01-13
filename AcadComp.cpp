@@ -11,6 +11,7 @@ HINSTANCE _hdllInstance =NULL ;
 #include "ACProfileManager.h"
 #include "ACCompBase.h"
 
+#include "zfcUtility.h"
 
 //DialogCompDwg *g_pDlgComp = NULL;
 
@@ -137,8 +138,8 @@ void InitApplication()
 	AddCommand(_T("DAACMP"), _T("COMPDIR"), _T("COMPDIR"), ACRX_CMD_MODAL, DAACMPCompDir);
 	//}}AFX_ARX_INIT
 
-	// TODO: add your initialization functions	
-
+	//	フォルダ比較アプリケーション名登録
+	ads_regapp( zfcUtility::appName() );
 
 	// 許容誤差をプロファイルから読み取り、比較クラスのstaticメンバにセットする。
 	ACProfileManager pMng;

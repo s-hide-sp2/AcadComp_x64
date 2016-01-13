@@ -164,6 +164,12 @@ bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbOb
 		ACDocManager docManager;
 
 		bResult = docManager.DrawResultDwg(blockIdNew, blockIdOld, resultCompEntity, conObjectIdNew, pDb);
+		if( bResult ){
+			auto es = zfcUtility::setAppXData(pDb);
+
+			if( Acad::eOk != es )
+				bResult = false;
+		}
 
 		if( bResult ){
 			auto filePath = zfcUtility::filePath( folderOutput(), strFileName );
