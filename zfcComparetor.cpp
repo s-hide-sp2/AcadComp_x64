@@ -160,7 +160,7 @@ bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbOb
 	bool bResult = true;
 	
 	try{
-		AcDbDatabase* pDb = new AcDbDatabase(true, false);
+		AcDbDatabase* pDb = new AcDbDatabase(true, true);
 		ACDocManager docManager;
 
 		bResult = docManager.DrawResultDwg(blockIdNew, blockIdOld, resultCompEntity, conObjectIdNew, pDb);
