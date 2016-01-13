@@ -46,6 +46,12 @@ public:
 	//	ファイルパスからファイルタイトル(拡張子を除く)を返す
 	static CString fileTitle( const CString& strPath );
 
+	//	複数要素を囲む矩形の左下・右上座標を計算する
+	static Acad::ErrorStatus getMinMaxPoints( AcGePoint3d& pntMin, AcGePoint3d& pntMax, const zfc::entityContainer& conEntity );
+
+	//	ズームする
+	static Acad::ErrorStatus zoom( const AcGePoint2d& center, double w, double h, AcDbDatabase* pDb );
+
 protected:
 
 	zfcUtility(void);

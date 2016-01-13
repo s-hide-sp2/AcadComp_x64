@@ -166,6 +166,21 @@ bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbOb
 		bResult = docManager.DrawResultDwg(blockIdNew, blockIdOld, resultCompEntity, conObjectIdNew, pDb);
 
 		if( bResult ){
+			zfc::entityContainer conEntity;
+			auto es = zfcUtility::getAllEntity( conEntity, pDb, AcDb::kForRead );
+			AcGePoint3d pntMin, pntMax;
+
+			if( Acad::eOk == es )
+				es = zfcUtility::getMinMaxPoints( pntMin, pntMax, conEntity );
+			if( Acad::eOk == es ){
+				auto pntCenter3d = pntMin + 0.5*( pntMax - pntMin );
+				AcGePoint2d pntCenter2d( pntCenter3d.x, pntCenter3d.y );
+				es = zfcUtility::zoom( pntCenter2d, (pntMax.x - pntMin.x), (pntMax.y - pntMin.y), pDb );
+			}
+
+		}
+
+		if( bResult ){
 			auto filePath = zfcUtility::filePath( folderOutput(), strFileName );
 			auto es = pDb->saveAs( filePath );
 

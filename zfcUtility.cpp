@@ -234,3 +234,68 @@ CString zfcUtility::fileTitle( const CString& strPath )
 	
 	return szPath;
 }
+
+//	複数要素を囲む矩形の左下・右上座標を計算する
+Acad::ErrorStatus zfcUtility::getMinMaxPoints( AcGePoint3d& pntMin, AcGePoint3d& pntMax, const zfc::entityContainer& conEntity )
+{
+	Acad::ErrorStatus es = Acad::eOk;
+	double dMinX = DBL_MAX;
+	double dMinY = DBL_MAX;
+	double dMinZ = DBL_MAX;
+	double dMaxX = -DBL_MAX;
+	double dMaxY = -DBL_MAX;
+	double dMaxZ = -DBL_MAX;
+
+	zfc::for_each_if( conEntity, [&](zfc::entityContainer::const_reference pair)->bool{
+		const auto& pEnt = pair.second;
+		AcDbExtents extents;
+		AcGePoint3d pntMax, pntMin;
+
+		es = pEnt->getGeomExtents(extents);
+		if( Acad::eOk != es )
+			return true;
+
+		pntMin = extents.minPoint();
+		pntMax = extents.maxPoint();
+		
+		dMinX = __min(pntMin.x, dMinX);
+		dMinY = __min(pntMin.y, dMinY);
+		dMinZ = __min(pntMin.z, dMinZ);
+
+		dMaxX = __max(pntMax.x, dMaxX);
+		dMaxY = __max(pntMax.y, dMaxY);
+		dMaxZ = __max(pntMax.z, dMaxZ);
+
+		return false;
+	} );
+	
+	if( Acad::eOk == es ){
+		pntMin.set( dMinX, dMinY, dMinZ );
+		pntMax.set( dMaxX, dMaxY, dMaxZ );
+	}
+
+	return es;
+}
+
+//	ズームする
+Acad::ErrorStatus zfcUtility::zoom( const AcGePoint2d& center, double w, double h, AcDbDatabase* pDb )
+{
+	Acad::ErrorStatus es = Acad::eOk;
+	AcDbViewportTable* pVpT = nullptr;
+	AcDbViewportTableRecord* pActVp = nullptr;
+	
+	es = pDb->getViewportTable(pVpT, AcDb::kForRead);
+	if( Acad::eOk == es ){
+		es = pVpT->getAt(_T("*Active"), pActVp, AcDb::kForWrite );
+		pVpT->close();
+	}
+
+	if( Acad::eOk == es ){
+		pActVp->setCenterPoint( center );
+		pActVp->setWidth( w );
+		pActVp->setHeight( h );
+		pActVp->close();
+	}
+
+	return es;
+}
