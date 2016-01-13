@@ -281,38 +281,21 @@ Acad::ErrorStatus zfcUtility::getMinMaxPoints( AcGePoint3d& pntMin, AcGePoint3d&
 Acad::ErrorStatus zfcUtility::zoom( const AcGePoint2d& center, double w, double h, AcDbDatabase* pDb )
 {
 	Acad::ErrorStatus es = Acad::eOk;
-	AcDbViewTableRecord view;
-
-	view.setCenterPoint( center );
-    view.setHeight( w );
-    view.setWidth( h );
+	AcDbViewportTable* pVpT = nullptr;
+	AcDbViewportTableRecord* pActVp = nullptr;
 	
-	AcDbViewport* pViewport = new AcDbViewport;
-    AcDbBlockTableRecord* blkRec = nullptr;
-    AcDbObjectId idView;
-
-    pViewport->setHeight(h);
-    pViewport->setWidth(w);
-    pViewport->setCenterPoint( AcGePoint3d(center.x, center.y, 0.0) );
-    pViewport->setDatabaseDefaults(pDb);
-
-	es = acdbOpenObject(blkRec, pDb->currentSpaceId(), AcDb::kForWrite);
-
-	es = blkRec->appendAcDbEntity( idView, pViewport );
-	es = blkRec->close();
-	/*
-	AcDbObjectIdArray idArray;
-	AcDbViewport* pViewport = nullptr;
-
-	es = pDb->getViewportArray( idArray, false );
+	es = pDb->getViewportTable(pVpT, AcDb::kForRead);
 	if( Acad::eOk == es ){
-		es = acdbOpenAcDbObject( (AcDbObject*&)pViewport, idArray[0], AcDb::kForWrite );
+		es = pVpT->getAt(_T("*Active"), pActVp, AcDb::kForWrite );
+		pVpT->close();
 	}
-	*/
 
 	if( Acad::eOk == es ){
-		es = acedSetCurrentView( &view, pViewport );
-		pViewport->close();
+		pActVp->setCenterPoint( center );
+		pActVp->setWidth( w );
+		pActVp->setHeight( h );
+		pActVp->close();
+		pDb->updateExt(true);
 	}
 
 	return es;
