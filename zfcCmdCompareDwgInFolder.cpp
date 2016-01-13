@@ -115,20 +115,31 @@ void zfcCmdCompareDwgInFolder::getDwgInFoder( zfc::pathContainer& conPath, const
 }
 
 //	ファイルパスを検出
-bool zfcCmdCompareDwgInFolder::findPath( zfc::pathContainer::const_iterator& itPath, const CString& strFind, const zfc::pathContainer& conPath ) const
+bool zfcCmdCompareDwgInFolder::findPath( CString& strTitle, CString& strPath, const CString& strFind, const zfc::pathContainer& conPath ) const
 {
 	bool bFind = false;
 	auto it = conPath.find( strFind );
 
 	if( conPath.end() == it ){
-		auto strNearFile = strFind.Left( strFind.GetLength()-1 );
+		auto strFindNearFile = strFind.Left( strFind.GetLength()-1 );
 
-		it = conPath.find( strNearFile );
+		zfc::for_each_if( conPath, [&](zfc::pathContainer::const_reference pair)->bool{
+			const auto& strCurTitle = pair.first;
+			const auto& strNearTitle = strCurTitle.Left( strCurTitle.GetLength()-1 );
+
+			if( !strFindNearFile.CompareNoCase(strNearTitle) ){
+				bFind = true;
+				strTitle = pair.first;
+				strPath = pair.second;
+			}
+
+			return bFind;
+		} );
 	}
-
-	if( conPath.end() != it ){
+	else{
+		strTitle = it->first;
+		strPath = it->second;
 		bFind = true;
-		itPath = it;
 	}
 	
 	return bFind;
@@ -138,13 +149,13 @@ bool zfcCmdCompareDwgInFolder::findPath( zfc::pathContainer::const_iterator& itP
 void zfcCmdCompareDwgInFolder::compare( zfc::pathContainer::const_reference pairNew, const zfc::pathContainer& conPathOld )
 {
 	const CString& strTitleNew = pairNew.first;
-	zfc::pathContainer::const_iterator itOld;
-	bool bFind = findPath( itOld, strTitleNew, conPathOld );
+	CString strOldTiltle, strOldPath;
+	bool bFind = findPath( strOldTiltle, strOldPath, strTitleNew, conPathOld );
 
 	if( bFind ){
-		bool result = zfcComparetor::instance().execute( itOld->second, pairNew.second );
+		bool result = zfcComparetor::instance().execute( strOldPath, pairNew.second );
 		assert( result );
-		addProcessed( itOld->first, itOld->second );
+		addProcessed( strOldTiltle, strOldPath );
 	}
 	else{
 		addUnProcessed( pairNew.first, pairNew.second );

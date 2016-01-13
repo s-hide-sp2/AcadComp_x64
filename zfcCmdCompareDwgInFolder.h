@@ -31,7 +31,7 @@ protected:
 	void getDwgInFoder( zfc::pathContainer& conPath, const CString& strFolder ) const;
 
 	//	ファイルパスを検出
-	bool findPath( zfc::pathContainer::const_iterator& itPath, const CString& strFind, const zfc::pathContainer& conPath ) const;
+	bool findPath( CString& strTitle, CString& strPath, const CString& strFind, const zfc::pathContainer& conPath ) const;
 
 	//	図面を比較する
 	void compare( zfc::pathContainer::const_reference pairNew, const zfc::pathContainer& conPathOld );

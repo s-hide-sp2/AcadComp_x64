@@ -37,4 +37,10 @@ namespace zfc{
 	T_function for_each(T_container& rcontainer, T_function function) {
 		return std::for_each(rcontainer.begin(), rcontainer.end(), function);
 	}
+
+	// ğŒ•t for_each ŒJ‚è•Ô‚µˆ—‚ğI—¹‚·‚éê‡‚Ífunction‚Åtrue‚ğ•Ô‚·
+	template <typename T_container, typename T_function>
+	void for_each_if(T_container& rcontainer, T_function function) {
+		std::find_if(rcontainer.begin(), rcontainer.end(), function);
+	}
 };
