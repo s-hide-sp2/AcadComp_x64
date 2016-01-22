@@ -16,6 +16,8 @@ CString zfcCmdCompareDwgInFolder::m_strFolderNewDwg;
 //	出力フォルダ
 CString zfcCmdCompareDwgInFolder::m_strFolderOutput;
 
+// サブフォルダ比較フラグ
+BOOL zfcCmdCompareDwgInFolder::m_bCompareSubFolder = FALSE;
 
 zfcCmdCompareDwgInFolder::zfcCmdCompareDwgInFolder(void)
 {
@@ -28,39 +30,36 @@ zfcCmdCompareDwgInFolder::~zfcCmdCompareDwgInFolder(void)
 
 bool zfcCmdCompareDwgInFolder::execute()
 {
-	zfc::pathContainer conPathOld;
-	zfc::pathContainer conPathNew;
-
 	//	各種フォルダを選択する
 	if( !selectFolder() )
 		return true;
 
+	CWaitCursor wait;
 	CString strLogPath = zfcUtility::filePath( folderOutput(), zfcUtility::logFileName() );
 
 	//	比較オブジェクト初期化
 	zfcComparetor::instance().init( folderOutput() );
+	zfcComparetor::instance().setFolderOldDwg( folderOldDwg() );
+	zfcComparetor::instance().setFolderNewDwg( folderNewDwg() );
+	
+	VERIFY( zfcLogger::instance().open( strLogPath ) );
 
-	{
-		CWaitCursor wait;
-		VERIFY( zfcLogger::instance().open( strLogPath ) );
+	zfcUtility::writeLog1( IDS_OLD_DWG_FOLDER, folderOldDwg() );
+	zfcUtility::writeLog1( IDS_NEW_DWG_FOLDER, folderNewDwg() );
+	zfcLogger::instance().write( _T("\r\n") );
 
-		zfcUtility::writeLog1( IDS_OLD_DWG_FOLDER, folderOldDwg() );
-		zfcUtility::writeLog1( IDS_NEW_DWG_FOLDER, folderNewDwg() );
-		zfcLogger::instance().write( _T("\r\n") );
+	//	比較実行
+	compare( folderOldDwg(), folderNewDwg() );
 
-		//	フォルダ下のファイル情報取得
-		getDwgInFoder( conPathOld, folderOldDwg() );
-		getDwgInFoder( conPathNew, folderNewDwg() );
+	//	サブフォルダを比較
+	if( doesCompareSubFolder() )
+		compareSubFolder();
 
-		// 比較実行
-		zfc::for_each( conPathNew, [=](zfc::pathContainer::const_reference pairNew){ compare( pairNew, conPathOld ); } );
+	// 旧図面フォルダにしかないファイル情報をログ出力
+	writeLogOnlyExistInOldDwgFolder( m_conPathOld );
 
-		// 旧図面フォルダにしかないファイル情報をログ出力
-		writeLogOnlyExistInOldDwgFolder( conPathOld );
-
-		// 新図面フォルダにしかないファイル情報をログ出力
-		writeLogOnlyExistInNewDwgFolder();
-	}
+	// 新図面フォルダにしかないファイル情報をログ出力
+	writeLogOnlyExistInNewDwgFolder();
 
 	//	比較結果をログ出力
 	writeLogResult();
@@ -74,6 +73,21 @@ bool zfcCmdCompareDwgInFolder::execute()
 	return true;
 }
 
+// 比較を実行する
+void zfcCmdCompareDwgInFolder::compare(const CString& strFolderOldDwg, const CString& strFolderNewDwg)
+{
+	zfc::pathContainer conPathOld;
+	zfc::pathContainer conPathNew;
+	//	フォルダ下のファイル情報取得
+	getDwgInFolder( conPathOld, strFolderOldDwg, folderOldDwg() );
+	getDwgInFolder( conPathNew, strFolderNewDwg, folderNewDwg() );
+
+	m_conPathOld.insert( conPathOld.begin(), conPathOld.end() );
+
+	// 比較実行
+	zfc::for_each( conPathNew, [=](zfc::pathContainer::const_reference pairNew){ compare( pairNew, conPathOld ); } );
+}
+
 //	各種フォルダを選択する
 bool zfcCmdCompareDwgInFolder::selectFolder()
 {
@@ -83,12 +97,14 @@ bool zfcCmdCompareDwgInFolder::selectFolder()
 	dlg.setFolderOldDwg( folderOldDwg() );
 	dlg.setFolderNewDwg( folderNewDwg() );
 	dlg.setFolderCompoundDwg( folderOutput() );
+	dlg.setCompareSubFolder( doesCompareSubFolder() );
 
 	//	フォルダ選択ダイアログ
 	if( dlg.DoModal() == IDOK ){
 		setFolderOldDwg( dlg.folderOldDwg() );
 		setFolderNewDwg( dlg.folderNewDwg() );
 		setfolderOutput( dlg.folderCompoundDwg() );
+		setCompareSubFolder( dlg.compareSubFolder() );
 		bSelect = true;
 	}
 
@@ -96,7 +112,7 @@ bool zfcCmdCompareDwgInFolder::selectFolder()
 }
 
 //	フォルダ下の図面ファイルを取得
-void zfcCmdCompareDwgInFolder::getDwgInFoder( zfc::pathContainer& conPath, const CString& strFolder ) const
+void zfcCmdCompareDwgInFolder::getDwgInFolder( zfc::pathContainer& conPath, const CString& strFolder, const CString& strParentFolder ) const
 {
 	CFileFind ff;
 	CString strFindFile;
@@ -108,7 +124,17 @@ void zfcCmdCompareDwgInFolder::getDwgInFoder( zfc::pathContainer& conPath, const
 	while( bFlg ){
 		bFlg = ff.FindNextFile();
 		if( !ff.IsDots() && !ff.IsDirectory() ){
-			auto itp = conPath.insert( zfc::pathContainer::value_type( ff.GetFileTitle(), ff.GetFilePath() ) );
+			auto strRelativeRoot = zfcUtility::relativePath( ff.GetRoot(), strParentFolder );
+			CString strKey;
+
+			if( strRelativeRoot.IsEmpty() ){
+				strKey = ff.GetFileTitle();
+			}
+			else{
+				strKey.Format( _T("%s\\%s"), strRelativeRoot, ff.GetFileTitle() );
+			}
+
+			auto itp = conPath.insert( zfc::pathContainer::value_type( strKey, ff.GetFilePath() ) );
 			assert( itp.second );
 		}
 	}
@@ -205,3 +231,97 @@ void zfcCmdCompareDwgInFolder::writeLogResult() const
 
 	zfcUtility::writeLog1( IDS_COMPARE_RESULT, strResult );
 }
+
+// サブフォルダの比較を実行する
+void zfcCmdCompareDwgInFolder::compareSubFolder()
+{
+	zfc::pathContainer conSubFolderOld;
+	zfc::pathContainer conSubFolderNew;
+
+	//	サブフォルダ取得
+	getSubFolder( conSubFolderOld, folderOldDwg(), folderOldDwg() );
+	getSubFolder( conSubFolderNew, folderNewDwg(), folderNewDwg() );
+
+	//	比較実行
+	zfc::for_each( conSubFolderNew, [=](zfc::pathContainer::const_reference pairFolderNew){ 
+		compareSubFolder( pairFolderNew, conSubFolderOld );
+	} );
+
+	// 旧図面フォルダにしかないサブフォルダ情報をログ出力
+	writeLogOnlyExistSubFolderInOld( conSubFolderOld );
+
+	// 新図面フォルダにしかないサブフォルダ情報をログ出力
+	writeLogOnlyExistSubFolderInNew();
+}
+
+// 旧図面フォルダにしかないサブフォルダ情報をログ出力
+void zfcCmdCompareDwgInFolder::writeLogOnlyExistSubFolderInOld(zfc::pathContainer& conSubFolderOld) const
+{
+	//	旧図面フォルダに存在したファイルコンテナから、処理済のファイルを除去
+	zfc::for_each( m_conProcessedFolder, [&](zfc::pathContainer::const_reference pair){conSubFolderOld.erase(pair.first);} );
+
+	if( !conSubFolderOld.empty() ){
+		zfcLogger::instance().write( _T("\r\n") );
+		zfcUtility::writeLog1( IDS_ONLY_EXIST_SUB_FOLDER_IN_OLD, _T("") );
+		//	旧図面フォルダのみに存在したファイルを出力
+		zfcUtility::writeFolderPath( conSubFolderOld );
+	}
+}
+
+// 新図面フォルダにしかないサブフォルダ情報をログ出力
+void zfcCmdCompareDwgInFolder::writeLogOnlyExistSubFolderInNew() const
+{
+	if( !m_conUnProcessedFolder.empty() ){
+		zfcLogger::instance().write( _T("\r\n") );
+		zfcUtility::writeLog1( IDS_ONLY_EXIST_SUB_FOLDER_IN_NEW, _T("") );
+		zfcUtility::writeFolderPath( m_conUnProcessedFolder );
+	}
+}
+
+//	サブフォルダを比較する
+void zfcCmdCompareDwgInFolder::compareSubFolder( zfc::pathContainer::const_reference pairFolderNew, const zfc::pathContainer& conFolderOld )
+{
+	auto itFolderOld = conFolderOld.find( pairFolderNew.first );
+
+	if( conFolderOld.end() != itFolderOld ){
+		const auto& folderOld = itFolderOld->second;
+		const auto& folderNew = pairFolderNew.second;
+		const auto& strFolderName = itFolderOld->first;
+		CString strFolderOutput;
+
+		//	出力フォルダセット
+		strFolderOutput.Format( _T("%s\\%s"), (LPCTSTR)folderOutput(), strFolderName );
+		zfcComparetor::instance().setFolderOutput( strFolderOutput );
+		//VERIFY( zfcUtility::createFolders(strFolderOutput) );
+		
+		//	比較実行
+		compare( folderOld, folderNew );
+		addProcessedFolder( itFolderOld->first, itFolderOld->second );
+	}
+	else{
+		addUnProcessedFolder( pairFolderNew.first, pairFolderNew.second );
+	}
+}
+
+//	サブフォルダを取得
+void zfcCmdCompareDwgInFolder::getSubFolder( zfc::pathContainer& conPath, const CString& strFolder, const CString& strParentFolder ) const
+{
+	CFileFind ff;
+	CString strFindFile;
+	BOOL bFlg = TRUE;
+
+	strFindFile.Format( _T("%s\\*"), strFolder );
+	bFlg = ff.FindFile( strFindFile );
+
+	while( bFlg ){
+		bFlg = ff.FindNextFile();
+		if( !ff.IsDots() && ff.IsDirectory() ){
+			auto strRelativePath = zfcUtility::relativePath(ff.GetFilePath(), strParentFolder );
+			auto itp = conPath.insert( zfc::pathContainer::value_type( strRelativePath, ff.GetFilePath() ) );
+			assert( itp.second );
+
+			getSubFolder( conPath, ff.GetFilePath(), strParentFolder );
+		}
+	}
+}
+

@@ -40,11 +40,20 @@ public:
 	//	ファイル名をログ出力出力する
 	static void writeFileName( const zfc::pathContainer& conPath );
 
+	//	フォルダパスをログ出力出力する
+	static void writeFolderPath( const zfc::pathContainer& conFolderPath );
+
 	//	ファイルパスからファイル名を返す
 	static CString fileName( const CString& strPath );
 
 	//	ファイルパスからファイルタイトル(拡張子を除く)を返す
 	static CString fileTitle( const CString& strPath );
+
+	//	相対パスを返す
+	static CString relativePath( const CString& strFilePath, const CString& strFolderPath );
+
+	//	フォルダを作成する
+	static BOOL createFolders(const CString& strFolder);
 
 	//	複数要素を囲む矩形の左下・右上座標を計算する
 	static Acad::ErrorStatus getMinMaxPoints( AcGePoint3d& pntMin, AcGePoint3d& pntMax, const zfc::entityContainer& conEntity );

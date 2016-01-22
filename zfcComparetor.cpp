@@ -68,15 +68,15 @@ bool zfcComparetor::execute( const CString& strPathOldDwg, const CString& strPat
 		if( bResult ){
 			if( resultCompEntity.GetCount() == 0 ){
 				incrementCorrespond();
-				zfcUtility::writeLog2( IDS_CORRESPOND, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+				zfcUtility::writeLog2( IDS_CORRESPOND, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), zfcUtility::relativePath(strPathNewDwg, folderNewDwg()) );
 			}
 			else{
 				incrementDiscord();
-				zfcUtility::writeLog2( IDS_DISCORD, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+				zfcUtility::writeLog2( IDS_DISCORD, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), zfcUtility::relativePath(strPathNewDwg, folderNewDwg()) );
 			}
 		}
 		else{
-			zfcUtility::writeLog2( IDS_FAIL_TO_COMPARE_DWG, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+			zfcUtility::writeLog2( IDS_FAIL_TO_COMPARE_DWG, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), zfcUtility::relativePath(strPathNewDwg, folderNewDwg()) );
 		}
 	}
 	
@@ -86,7 +86,7 @@ bool zfcComparetor::execute( const CString& strPathOldDwg, const CString& strPat
 		bResult = makeCompoundDwg(pDbNew->blockTableId(), pDbOld->blockTableId(), resultCompEntity, conObjectIdNew, strCompoundDwgFileName );
 
 		if( !bResult ){
-			zfcUtility::writeLog2( IDS_FAIL_TO_COMPOUND_DWG, zfcUtility::fileName(strPathOldDwg), strCompoundDwgFileName );
+			zfcUtility::writeLog2( IDS_FAIL_TO_COMPOUND_DWG, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), strCompoundDwgFileName );
 		}
 	}
 
@@ -111,12 +111,12 @@ bool zfcComparetor::compareFileStatus( const CString& strPathOldDwg, const CStri
 
 	if( fileStatusOld.m_mtime == fileStatusNew.m_mtime && fileStatusOld.m_size == fileStatusNew.m_size ){
 		incrementCorrespond();
-		zfcUtility::writeLog2( IDS_CORRESPOND, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+		zfcUtility::writeLog2( IDS_CORRESPOND, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), zfcUtility::relativePath(strPathNewDwg, folderNewDwg()) );
 		bContinue = false;
 	}
 	else if( fileStatusNew.m_mtime < fileStatusOld.m_mtime ){
 		incrementWarning();
-		zfcUtility::writeLog2( IDS_OLD_DWG_TIMESTAMP_IS_NEW, zfcUtility::fileName(strPathOldDwg), zfcUtility::fileName(strPathNewDwg) );
+		zfcUtility::writeLog2( IDS_OLD_DWG_TIMESTAMP_IS_NEW, zfcUtility::relativePath(strPathOldDwg, folderOldDwg()), zfcUtility::relativePath(strPathNewDwg, folderNewDwg()) );
 		bContinue = false;
 	}
 
@@ -177,10 +177,10 @@ bool zfcComparetor::makeCompoundDwg(const AcDbObjectId& blockIdNew, const AcDbOb
 				AcGePoint2d pntCenter2d( pntCenter3d.x, pntCenter3d.y );
 				es = zfcUtility::zoom( pntCenter2d, (pntMax.x - pntMin.x), (pntMax.y - pntMin.y), pDb );
 			}
-
 		}
 
 		if( bResult ){
+			VERIFY( zfcUtility::createFolders(folderOutput()) );
 			auto filePath = zfcUtility::filePath( folderOutput(), strFileName );
 			auto es = pDb->saveAs( filePath );
 

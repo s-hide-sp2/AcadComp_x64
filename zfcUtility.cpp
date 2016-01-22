@@ -210,6 +210,17 @@ void zfcUtility::writeFileName( const zfc::pathContainer& conPath )
 		zfcLogger::instance().write( str ); } );
 }
 
+//	フォルダパスをログ出力出力する
+void zfcUtility::writeFolderPath( const zfc::pathContainer& conFolderPath )
+{
+	zfc::for_each( conFolderPath, [](zfc::pathContainer::const_reference pair){ 
+		CString str;
+
+		str.Format( _T("%s\r\n"), pair.first );
+		zfcLogger::instance().write( str ); 
+	} );
+}
+
 //	ファイルパスからファイル名を返す
 CString zfcUtility::fileName( const CString& strPath )
 {
@@ -233,6 +244,38 @@ CString zfcUtility::fileTitle( const CString& strPath )
 	_tmakepath( szPath, NULL, NULL, szName, NULL ); 
 	
 	return szPath;
+}
+
+//	相対パスを返す
+CString zfcUtility::relativePath( const CString& strFilePath, const CString& strFolderPath )
+{
+	CString strResult(strFilePath);
+	auto temp = strFilePath.Left( strFolderPath.GetLength() );
+
+	if( !strFolderPath.CompareNoCase(temp) ){
+		strResult = strFilePath.Mid( strFolderPath.GetLength()+1 );
+		
+		if( strResult.Right(1) == _T("\\") )
+			strResult = strResult.Left(strResult.GetLength()-1);
+	}
+
+	return strResult;
+}
+
+//	フォルダを作成する
+BOOL zfcUtility::createFolders(const CString& strFolder)
+{
+	BOOL bResult = TRUE;
+	CFileFind ff;
+
+	if( !ff.FindFile(strFolder) ){
+		auto result = ::SHCreateDirectoryEx( NULL, strFolder, NULL );
+	
+		if( ERROR_SUCCESS != result )
+			bResult = FALSE;
+	}
+
+	return bResult;
 }
 
 //	複数要素を囲む矩形の左下・右上座標を計算する

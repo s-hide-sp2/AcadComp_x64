@@ -26,6 +26,9 @@ public:
 	const CString& folderCompoundDwg() const;
 	void setFolderCompoundDwg(const CString& value);
 
+	BOOL compareSubFolder() const;
+	void setCompareSubFolder(BOOL value);
+
 // ダイアログ データ
 	enum { IDD = IDD_DLG_SEL_FOLDER };
 
@@ -50,6 +53,9 @@ private:
 
 	//	合成図面フォルダ
 	CString m_strFolderCompoundDwg;
+
+	// サブフォルダ比較フラグ
+	BOOL m_bCompareSubFolder;
 
 public:
 	afx_msg void OnBnClickedBtnFolderOldDwg();
@@ -88,3 +94,12 @@ inline void zfcDlgSelectFolder::setFolderCompoundDwg(const CString& value)
 	m_strFolderCompoundDwg = value;
 }
 
+inline BOOL zfcDlgSelectFolder::compareSubFolder() const
+{
+	return m_bCompareSubFolder;
+}
+
+inline void zfcDlgSelectFolder::setCompareSubFolder(BOOL value)
+{
+	m_bCompareSubFolder = value;
+}
