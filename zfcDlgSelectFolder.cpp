@@ -16,6 +16,7 @@ zfcDlgSelectFolder::zfcDlgSelectFolder(CWnd* pParent /*=NULL*/)
 	, m_strFolderOldDwg(_T(""))
 	, m_strFolderNewDwg(_T(""))
 	, m_strFolderCompoundDwg(_T(""))
+	, m_bCompareSubFolder(FALSE)
 {
 
 }
@@ -65,6 +66,7 @@ void zfcDlgSelectFolder::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDT_FOLDER_OLD_DWG, m_strFolderOldDwg);
 	DDX_Text(pDX, IDC_EDT_FOLDER_NEW_DWG, m_strFolderNewDwg);
 	DDX_Text(pDX, IDC_EDT_FOLDER_COMPOUND_DWG, m_strFolderCompoundDwg);
+	DDX_Check(pDX, IDC_CHK_SUB_FOLDER, m_bCompareSubFolder);
 }
 
 

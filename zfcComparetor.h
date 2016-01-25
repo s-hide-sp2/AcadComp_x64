@@ -32,6 +32,15 @@ public:
 	//	エラー数
 	int cntError() const;
 
+	//	出力フォルダをセットする
+	void setFolderOutput( const CString& value );
+
+	//	旧図面フォルダをセットする
+	void setFolderOldDwg( const CString& value );
+	
+	//	新図面フォルダをセットする
+	void setFolderNewDwg( const CString& value );
+
 protected:
 
 	zfcComparetor(void);
@@ -61,6 +70,12 @@ protected:
 	//	エラー数インクリメント
 	void incrementError();
 
+	//	旧図面フォルダを返す
+	const CString& folderOldDwg() const;
+
+	//	新図面フォルダを返す
+	const CString& folderNewDwg() const;
+
 	//	出力フォルダを返す
 	const CString& folderOutput() const;
 
@@ -79,6 +94,12 @@ private:
 
 	//	エラー数
 	int m_nCntError;
+
+	//	旧図面フォルダ
+	CString m_strFolderOldDwg;
+
+	//	新図面フォルダ
+	CString m_strFolderNewDwg;
 
 	//	出力フォルダ
 	CString m_strFolderOutput;
@@ -136,5 +157,35 @@ inline void zfcComparetor::incrementError()
 inline const CString& zfcComparetor::folderOutput() const
 {
 	return m_strFolderOutput;
+}
+
+//	出力フォルダをセットする
+inline void zfcComparetor::setFolderOutput( const CString& value )
+{
+	m_strFolderOutput = value;
+}
+
+//	旧図面フォルダをセットする
+inline void zfcComparetor::setFolderOldDwg( const CString& value )
+{
+	m_strFolderOldDwg = value;
+}
+	
+//	新図面フォルダをセットする
+inline void zfcComparetor::setFolderNewDwg( const CString& value )
+{
+	m_strFolderNewDwg = value;
+}
+
+//	旧図面フォルダを返す
+inline const CString& zfcComparetor::folderOldDwg() const
+{
+	return m_strFolderOldDwg;
+}
+
+//	新図面フォルダを返す
+inline const CString& zfcComparetor::folderNewDwg() const
+{
+	return m_strFolderNewDwg;
 }
 

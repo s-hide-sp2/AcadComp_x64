@@ -25,6 +25,8 @@
 #define IDS_SELECT_OLD_DWG_FOLDER       120
 #define IDS_SELECT_NEW_DWG_FOLDER       121
 #define IDS_SELECT_COMPOUND_DWG_FOLDER  122
+#define IDS_ONLY_EXIST_SUB_FOLDER_IN_OLD 123
+#define IDS_ONLY_EXIST_SUB_FOLDER_IN_NEW 124
 #define IDC_LIST_GRID                   200
 #define IDD_DLG_COMP                    200
 #define IDC_CBO_DWG_LIST1               201
@@ -59,6 +61,7 @@
 #define IDC_EDT_FOLDER_COMPOUND_DWG     225
 #define IDC_BTN_FOLDER_COMPOUND_DWG     226
 #define IDEXECUTE                       227
+#define IDC_CHK_SUB_FOLDER              228
 #define ID_MNU_SETTING                  32768
 
 // Next default values for new objects
@@ -67,7 +70,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        208
 #define _APS_NEXT_COMMAND_VALUE         32769
-#define _APS_NEXT_CONTROL_VALUE         228
+#define _APS_NEXT_CONTROL_VALUE         229
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

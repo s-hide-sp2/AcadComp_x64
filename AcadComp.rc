@@ -140,6 +140,7 @@ BEGIN
     LTEXT           "合成図面(&C):",IDC_STATIC,9,93,46,8
     PUSHBUTTON      "...",IDC_BTN_FOLDER_COMPOUND_DWG,348,90,21,14
     EDITTEXT        IDC_EDT_FOLDER_COMPOUND_DWG,7,105,362,14,ES_AUTOHSCROLL
+    CONTROL         "サブフォルダを比較",IDC_CHK_SUB_FOLDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,140,82,10
 END
 
 
@@ -238,6 +239,8 @@ BEGIN
     IDS_SELECT_OLD_DWG_FOLDER "旧図面フォルダを選択して下さい。"
     IDS_SELECT_NEW_DWG_FOLDER "新図面フォルダを選択して下さい。"
     IDS_SELECT_COMPOUND_DWG_FOLDER "合成図面フォルダを選択して下さい。"
+    IDS_ONLY_EXIST_SUB_FOLDER_IN_OLD "以下のサブフォルダは新図面フォルダに存在しませんでした\r\n"
+    IDS_ONLY_EXIST_SUB_FOLDER_IN_NEW "以下のサブフォルダは旧図面フォルダに存在しませんでした\r\n"
 END
 
 #endif    // 日本語 (日本) resources
